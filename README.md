@@ -2,6 +2,8 @@
 
 Automatic Medical Concept Detection on Images: Dividing the Task into Smaller Ones
 
+![Project Diagram](https://github.com/axelm11/CLEF-ImageCLEF-2024/blob/master/resources/diagram.jpeg)
+
 In this repository, you will find the participation of the UACH-Vision-Lab team in the ImageCLEFmedical Lab at CLEF 2024 competition.
 
 The repository consists of three folders:
