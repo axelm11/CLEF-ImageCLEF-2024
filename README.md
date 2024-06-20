@@ -1,4 +1,4 @@
-#UACH-Vision-Lab's Participation in ImageCLEFmedical Lab at CLEF 2024
+# UACH-Vision-Lab's Participation in ImageCLEFmedical Lab at CLEF 2024
 
 Automatic Medical Concept Detection on Images: Dividing the Task into Smaller Ones
 
