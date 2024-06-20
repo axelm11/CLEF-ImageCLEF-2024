@@ -1,40 +1,29 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Apr 21 14:32:11 2024
 
-@author: ingenieria
-"""
 #import packages
 import os, time
 import pandas as pd
 import numpy as np
-
 from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from torch import autocast
-
 import torchvision.transforms as transforms
-
 from timm.models import create_model
-
 from sklearn.metrics import f1_score
 from livelossplot import PlotLosses
 
 
-MODEL_DIR = "/home/ingenieria/Documentos/axel-tesis/ressep/res_25_filtrado/"
-filenameCSV="EDV2performaces_25filt.csv"
-data_train= "/home/ingenieria/Documentos/axel-tesis/ressep/train_25_filtrado/"
-data_valid= "/home/ingenieria/Documentos/axel-tesis/ressep/valid_25_filtrado/"
+MODEL_DIR = "/path_to/directory/"
+filenameCSV="EDV2performaces_filt.csv"
+data_train= "/path_to/train_filt/"
+data_valid= "/path_to//valid_filt/"
 
 
 
-df_train=pd.read_csv("/home/ingenieria/Documentos/axel-tesis/train_25_filt.csv",sep=",")
-df_valid=pd.read_csv("/home/ingenieria/Documentos/axel-tesis/valid_25_filt.csv",sep=",")
+df_train=pd.read_csv("/path_to//train_filt.csv",sep=",")
+df_valid=pd.read_csv("/path_to/valid_filt.csv",sep=",")
 
 df_train
 

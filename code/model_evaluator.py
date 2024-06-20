@@ -3,39 +3,34 @@
 import os, time
 import pandas as pd
 import numpy as np
-
 from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from torch import autocast
-
 import torchvision.transforms as transforms
-
 from timm.models import create_model
-
 from sklearn.metrics import f1_score
 from livelossplot import PlotLosses
 from sklearn.metrics import classification_report
 import shutil
 
 DATA_DIR=os.getcwd()+"/"
-MODEL_DIR = DATA_DIR +"ressep/res_1945/"
-data_train=DATA_DIR+"train/"
-data_valid=DATA_DIR+"valid/"
-data_test=DATA_DIR+"test/"
-model_path = MODEL_DIR+"EDV2_model_adam_0.001_31.pth"  #aqui va el modelo que quiero probar
-model_path94 = DATA_DIR + "ressep/res_94_decay/EDV2_model_adam_0.001_17.pth" # pesos del modelo CUI94
-model_path4 = DATA_DIR+"ressep/res_4_decay/EDV2_model_adam_0.001_30.pth"  
-model_path1 = DATA_DIR+"ressep/res_1_decay/EDV2_model_adam_0.001_38.pth" 
-model_path25 = DATA_DIR+"ressep/res_25_decay/EDV2_model_adam_0.001_36.pth" 
+MODEL_DIR = DATA_DIR +"path_to_directory/"
+data_train=DATA_DIR+"path_to/train/"
+data_valid=DATA_DIR+"path_to/valid/"
+data_test=DATA_DIR+"path_to_test/"
+model_path = MODEL_DIR+"/path_to_weights_original_model/EDV2_model_adam_0.001.pth"
+model_path1 = DATA_DIR + "/path_to_weights/EDV2_model_adam_0.001.pth"
+model_path2 = DATA_DIR + "/path_to_weights2/EDV2_model_adam_0.001.pth"
+model_path3 = DATA_DIR + "/path_to_weights3/EDV2_model_adam_0.001.pth"
+model_path4 = DATA_DIR + "/path_to_weights4/EDV2_model_adam_0.001.pth"
 
 
 #load dataset with IDs
-df_train=pd.read_csv(DATA_DIR+"train_concepts.csv",sep=",")
-df_valid=pd.read_csv(DATA_DIR+"valid_concepts.csv",sep=",")
+df_train=pd.read_csv(DATA_DIR+"path_to/train_concepts.csv",sep=",")
+df_valid=pd.read_csv(DATA_DIR+"path_to/valid_concepts.csv",sep=",")
 
 df_train["image_path"]=data_train+df_train.ID+".jpg"
 df_valid["image_path"]=data_valid+df_valid.ID+".jpg"
@@ -47,18 +42,39 @@ for (i,row) in df_train.iterrows():
             cuis_list.append(cui)
 cuiscomplete=np.array(cuis_list)
             
-df_train94=pd.read_csv(DATA_DIR+"train_94_filt2.csv",sep=",")
-df_valid94=pd.read_csv(DATA_DIR+"valid_94_filt2.csv",sep=",")
-cuis_list94 = []
-cuis_index = np.array([94])
-for (i,row) in df_train94.iterrows():
+df_train1=pd.read_csv(DATA_DIR+"path_to/train_1_filt.csv",sep=",")
+df_valid1=pd.read_csv(DATA_DIR+"path_to/valid_1_filt.csv",sep=",")
+cuis_list1 = []
+cuis_index = np.array([1])
+for (i,row) in df_train1.iterrows():
     for cui in row["CUIs"].split(";"):
-        if not cui in cuis_list94:
-            cuis_list94.append(cui)
-NUM_CLASSES94=len(cuis_list94)
+        if not cui in cuis_list1:
+            cuis_list1.append(cui)
+NUM_CLASSES1=len(cuis_list1)
 
-df_train4=pd.read_csv(DATA_DIR+"train_4_filt.csv",sep=",")
-df_valid4=pd.read_csv(DATA_DIR+"valid_4_filt.csv",sep=",")
+df_train2=pd.read_csv(DATA_DIR+"path_to/train_2_filt.csv",sep=",")
+df_valid2=pd.read_csv(DATA_DIR+"path_to/valid_2_filt.csv",sep=",")
+cuis_list2 = []
+cuis_index2 = np.array([2])
+for (i,row) in df_train2.iterrows():
+    for cui in row["CUIs"].split(";"):
+        if not cui in cuis_list2:
+            cuis_list2.append(cui)
+NUM_CLASSES2=len(cuis_list2)
+
+df_train3=pd.read_csv(DATA_DIR+"path_to/train_3_filt.csv",sep=",")
+df_valid3=pd.read_csv(DATA_DIR+"path_to/valid_3_filt.csv",sep=",")
+cuis_list3 = []
+cuis_index3 = np.array([3])
+for (i,row) in df_train3.iterrows():
+    for cui in row["CUIs"].split(";"):
+        if not cui in cuis_list3:
+            cuis_list3.append(cui)
+NUM_CLASSES3=len(cuis_list3)
+
+
+df_train4=pd.read_csv(DATA_DIR+"path_to/train_4_filt.csv",sep=",")
+df_valid4=pd.read_csv(DATA_DIR+"path_to/valid_4_filt.csv",sep=",")
 cuis_list4 = []
 cuis_index4 = np.array([4])
 for (i,row) in df_train4.iterrows():
@@ -67,31 +83,10 @@ for (i,row) in df_train4.iterrows():
             cuis_list4.append(cui)
 NUM_CLASSES4=len(cuis_list4)
 
-df_train1=pd.read_csv(DATA_DIR+"ressep/res_1_filtrado/train_1_filt.csv",sep=",")
-df_valid1=pd.read_csv(DATA_DIR+"ressep/res_1_filtrado/valid_1_filt.csv",sep=",")
-cuis_list1 = []
-cuis_index1 = np.array([1])
-for (i,row) in df_train1.iterrows():
-    for cui in row["CUIs"].split(";"):
-        if not cui in cuis_list1:
-            cuis_list1.append(cui)
-NUM_CLASSES1=len(cuis_list1)
-
-
-df_train25=pd.read_csv(DATA_DIR+"ressep/res_25_filtrado/train_25_filt.csv",sep=",")
-df_valid25=pd.read_csv(DATA_DIR+"ressep/res_25_filtrado/valid_25_filt.csv",sep=",")
-cuis_list25 = []
-cuis_index25 = np.array([1])
-for (i,row) in df_train25.iterrows():
-    for cui in row["CUIs"].split(";"):
-        if not cui in cuis_list25:
-            cuis_list25.append(cui)
-NUM_CLASSES25=len(cuis_list25)
-
 #para sacar el histograma 
 
-df_train94['CUIs'] = df_train94['CUIs'].str.split(';')
-CUIs_counts = [g for gen in df_train94['CUIs'] for g in gen]
+df_train1['CUIs'] = df_train1['CUIs'].str.split(';')
+CUIs_counts = [g for gen in df_train1['CUIs'] for g in gen]
 c= pd.Series(CUIs_counts).value_counts()
 d= df_train['CUIs'].str.len().plot.hist(bins=60)
 
@@ -170,29 +165,29 @@ model = model.to(device)
 model.eval()
 
 
-model94=create_model('efficientnet_b0', pretrained=True, num_classes=NUM_CLASSES94, drop_path_rate=0.2)  
-state_dict94 = torch.load(model_path94)
-model94.load_state_dict(state_dict94)
-model94 = model94.to(device)             
-model94.eval()
-
-model4=create_model('efficientnet_b0', pretrained=True, num_classes=NUM_CLASSES4, drop_path_rate=0.2)  
-state_dict4 = torch.load(model_path4)
-model4.load_state_dict(state_dict4)
-model4 = model4.to(device)             
-model4.eval()
-
-model1=create_model('efficientnet_b0', pretrained=True, num_classes=NUM_CLASSES1, drop_path_rate=0.2)  
+model1=create_model('efficientnet_b0', pretrained=True, num_classes=NUM_CLASSES1, drop_path_rate=0.2)
 state_dict1 = torch.load(model_path1)
 model1.load_state_dict(state_dict1)
-model1 = model1.to(device)             
+model1 = model1.to(device)
 model1.eval()
 
-model25=create_model('efficientnet_b0', pretrained=True, num_classes=NUM_CLASSES25, drop_path_rate=0.2)  
-state_dict25 = torch.load(model_path25)
-model25.load_state_dict(state_dict25)
-model25 = model25.to(device)             
-model25.eval()
+model2=create_model('efficientnet_b0', pretrained=True, num_classes=NUM_CLASSES2, drop_path_rate=0.2)
+state_dict2 = torch.load(model_path2)
+model2.load_state_dict(state_dict2)
+model2 = model2.to(device)
+model2.eval()
+
+model3=create_model('efficientnet_b0', pretrained=True, num_classes=NUM_CLASSES3, drop_path_rate=0.2)
+state_dict3 = torch.load(model_path3)
+model3.load_state_dict(state_dict3)
+model3 = model3.to(device)
+model3.eval()
+
+model4=create_model('efficientnet_b0', pretrained=True, num_classes=NUM_CLASSES4, drop_path_rate=0.2)
+state_dict4 = torch.load(model_path4)
+model4.load_state_dict(state_dict4)
+model4 = model4.to(device)
+model4.eval()
 
 loss_function = nn.MultiLabelSoftMarginLoss()
 batchsize_factor=1
@@ -220,31 +215,9 @@ with torch.no_grad():
             if len(ones) > 0:
                 for index in ones:   
                     if index in cuis_index:
-                        outputs94 = model94(inputs)
-                        output_sig94 = m(outputs94)
-                        o94 = (output_sig94 >= 0.5).long().detach().cpu().numpy()  
-                        ones94 = np.where(o94 == 1)[1]
-                        if len(ones94)>0:
-                            for ind in ones94:
-                                CUIadd=cuis_list94[ind]
-                                ind94 = np.where( cuiscomplete == CUIadd)[0]
-                                o1[:,ind94]=1
-                                
-                    if index in cuis_index4:
-                        outputs4 = model4(inputs)
-                        output_sig4 = m(outputs4)
-                        o4 = (output_sig4 >= 0.5).long().detach().cpu().numpy()  
-                        ones4 = np.where(o4 == 1)[1]
-                        if len(ones4)>0:
-                            for ind in ones4:
-                                CUIadd=cuis_list4[ind]
-                                ind4 = np.where( cuiscomplete == CUIadd)[0]
-                                o1[:,ind4]=1
-                                
-                    if index in cuis_index1:
                         outputs1 = model1(inputs)
                         output_sig1 = m(outputs1)
-                        om1 = (output_sig1 >= 0.5).long().detach().cpu().numpy()  
+                        om1 = (output_sig1 >= 0.5).long().detach().cpu().numpy()
                         ones1 = np.where(om1 == 1)[1]
                         if len(ones1)>0:
                             for ind in ones1:
@@ -252,16 +225,38 @@ with torch.no_grad():
                                 ind1 = np.where( cuiscomplete == CUIadd)[0]
                                 o1[:,ind1]=1
                                 
-                    if index in cuis_index25:
-                        outputs25 = model25(inputs)
-                        output_sig25= m(outputs25)
-                        o25 = (output_sig25 >= 0.5).long().detach().cpu().numpy()  
-                        ones25 = np.where(o25 == 1)[1]
+                    if index in cuis_index2:
+                        outputs2 = model2(inputs)
+                        output_sig2 = m(outputs2)
+                        o2 = (output_sig2 >= 0.5).long().detach().cpu().numpy()
+                        ones2 = np.where(o2 == 1)[1]
+                        if len(ones2)>0:
+                            for ind in ones2:
+                                CUIadd=cuis_list2[ind]
+                                ind2 = np.where( cuiscomplete == CUIadd)[0]
+                                o1[:,ind2]=1
+                                
+                    if index in cuis_index3:
+                        outputs3 = model3(inputs)
+                        output_sig3 = m(outputs3)
+                        o3 = (output_sig3 >= 0.5).long().detach().cpu().numpy()
+                        ones3 = np.where(o3 == 1)[1]
+                        if len(ones3)>0:
+                            for ind in ones3:
+                                CUIadd=cuis_list3[ind]
+                                ind3 = np.where( cuiscomplete == CUIadd)[0]
+                                o1[:,ind3]=1
+                                
+                    if index in cuis_index4:
+                        outputs4 = model4(inputs)
+                        output_sig4= m(outputs4)
+                        o4 = (output_sig4 >= 0.5).long().detach().cpu().numpy()
+                        ones4 = np.where(o4 == 1)[1]
                         if len(ones1)>0:
-                            for ind in ones25:
-                                CUIadd=cuis_list1[ind]
-                                ind25 = np.where( cuiscomplete == CUIadd)[0]
-                                o1[:,ind25]=1
+                            for ind in ones4:
+                                CUIadd=cuis_list4[ind]
+                                ind4 = np.where( cuiscomplete == CUIadd)[0]
+                                o1[:,ind4]=1
                                     
         selected_indices = np.where(o1 == 1)[1]
         selected_names = [cuis_list[i] for i in selected_indices]

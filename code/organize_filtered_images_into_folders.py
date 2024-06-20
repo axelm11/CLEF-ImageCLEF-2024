@@ -3,14 +3,14 @@ import os
 import pandas as pd
 
 DATA_DIR = os.getcwd() + "/"
-MODEL_DIR = DATA_DIR + "ressep/"
+MODEL_DIR = DATA_DIR + "path_to/directory/"
 filenameCSV = MODEL_DIR + "EDV2performances.csv"
-data_train = DATA_DIR + "train/"
-data_valid = DATA_DIR + "valid/"
+data_train = DATA_DIR + "path_to/train/"
+data_valid = DATA_DIR + "path_to/valid/"
 
 # Load dataset with IDs
-df_train = pd.read_csv(DATA_DIR + "train_concepts.csv", sep=",")
-df_valid = pd.read_csv(DATA_DIR + "valid_concepts.csv", sep=",")
+df_train = pd.read_csv(DATA_DIR + "path_to/train_concepts.csv", sep=",")
+df_valid = pd.read_csv(DATA_DIR + "path_to/valid_concepts.csv", sep=",")
 
 df_train
 
@@ -38,7 +38,7 @@ df1 = pd.read_csv("/path_to_your_csv_file/train_filt.csv")
 relevant_ids = df1['ID'].tolist()
 
 # Original directory containing all train images
-original_image_dir = "/path_to_folder/train/"
+original_image_dir = data_train
 
 # Directory where the relevant images will be stored
 relevant_image_dir = "/path_to_folder/train_new_folder/"
@@ -61,7 +61,7 @@ df2 = pd.read_csv("/path_to_your_csv_file/valid_filt.csv")
 relevant_ids = df2['ID'].tolist()
 
 # Original directory containing all valid images
-original_image_dir = "/path_to_folder/valid/"
+original_image_dir = data_valid
 
 # Directory where the relevant images will be stored
 relevant_image_dir = "/path_to_folder/valid_new_folder/"
